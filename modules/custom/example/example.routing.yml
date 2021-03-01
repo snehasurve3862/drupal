@@ -1,0 +1,7 @@
+example.settings:
+  path: '/admin/config/example/settings'
+  defaults:
+    _form: '\Drupal\example\Form\TimeZoneConfigForm'
+    _title: 'Configure Time here'
+  requirements:
+    _permission: 'administer site configuration'

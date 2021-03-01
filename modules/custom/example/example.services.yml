@@ -1,0 +1,5 @@
+services:
+  example.time_data:
+      class: Drupal\example\TimeDataService
+      arguments: ['@config.factory','@date.formatter']
+      
