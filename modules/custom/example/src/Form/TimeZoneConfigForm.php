@@ -6,6 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Cache\CacheBackendInterface;
 
 /**
  * Class HeaderConfigForm.
@@ -15,8 +16,9 @@ class TimeZoneConfigForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory) {
+  public function __construct(ConfigFactoryInterface $config_factory, CacheBackendInterface $cache) {
     $this->setConfigFactory($config_factory);
+    $this->cache = $cache;
   }
 
   /**
@@ -24,7 +26,7 @@ class TimeZoneConfigForm extends ConfigFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('config.factory')
+      $container->get('config.factory'), $container->get('cache.render')
     );
   }
 
@@ -48,7 +50,7 @@ class TimeZoneConfigForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    
+
     $config = $this->config('example.timeconfig');
     $form['country'] = [
       '#type' => 'textfield',
@@ -95,6 +97,7 @@ class TimeZoneConfigForm extends ConfigFormBase {
       ->set('city', $form_state->getValue('city'))
       ->set('zone', $form_state->getValue('zone'))
       ->save();
+    $this->cache->invalidateAll();
   }
 
 }

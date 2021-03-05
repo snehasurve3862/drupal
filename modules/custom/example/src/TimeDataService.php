@@ -4,8 +4,9 @@ namespace Drupal\example;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\Security\TrustedCallbackInterface;
 
-class TimeDataService {
+class TimeDataService implements TrustedCallbackInterface {
 
   /**
    *
@@ -33,7 +34,7 @@ class TimeDataService {
       $container->get('config.factory'), $container->get('date.formatter')
     );
   }
-  
+
   /**
    * Function that return country and city.
    * @return type
@@ -45,7 +46,7 @@ class TimeDataService {
     $result['zone'] = $this->configFactory->getEditable('example.timeconfig')->get('zone');
     return $result;
   }
-  
+
   /**
    * Function that return time.
    * @return type
@@ -56,6 +57,13 @@ class TimeDataService {
     return array(
       '#markup' => $date,
     );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function trustedCallbacks() {
+    return ['getTime'];
   }
 
 }
